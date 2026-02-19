@@ -31,7 +31,7 @@ This repository demonstrates caching and header configuration for a web security
 - Generate private key `opnssl genrsa -out private-key.pem 2048`
 - Command to make a 1 year cert: `openssl req -new -x509 -key private-key.pem -out certificate.pen -days 365`
 
-### Express and Https
+### Express and HTTPS
 
 - pass your app into the https server
 
