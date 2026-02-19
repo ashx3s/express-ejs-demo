@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+h1 {
+  color: #0b74b6;
+}
+
+header {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #0b74b6;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+main {
+  margin: 1rem;
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  margin-top: 2rem;
+}
