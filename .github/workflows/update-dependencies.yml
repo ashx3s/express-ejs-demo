@@ -1,0 +1,58 @@
+name: Update Dependencies & Fix Vulnerabilities
+on:
+  schedule:
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+jobs:
+  update-deps:
+    name: Update Dependencies & Fix Vulnerabilities
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Fix Vulnerabilities
+        run: npm audit fix
+
+      # Verify the fix actually resolved issues at or above moderate severity.
+      # If unfixable vulnerabilities remain, the workflow fails here
+      # and no PR is created with broken or insecure code.
+      - name: Verify Audit is Clean
+        run: npm audit --audit-level=moderate
+
+      # Run tests before opening the PR so the automation
+      # does the verification instead of the reviewer.
+      - name: Run Tests
+        run: npm test --if-present
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dependencies and fix vulnerabilities to develop branch"
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: chore/update-deps-develop
+          base: develop
+          delete-branch: true
+          title: "[Develop] chore: Update Dependencies & Fix Vulnerabilities"
+          body: |
+            Automated dependency update run by GitHub Actions targeting `develop`.
+            Updates dependencies based on `npm audit fix`.
+            Audit verified clean at `moderate` level or above.
+            Tests passed before this PR was opened.
